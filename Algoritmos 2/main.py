@@ -2,7 +2,6 @@ from funcoes import *  # Módulo das funçoes do programa
 
 
 while True:
-    system('cls' if name == 'nt' else 'clear')  # Limpa a tela em GNU/Linux e Windows
 
     print(f"{ht}\n{'[ M E N U   P R I N C I P A L ]':^38}\n{ht}\n")
     resp = int(input('\n'
@@ -19,4 +18,5 @@ while True:
         break
     else:
         print('Opção inválida')
+        system('cls' if name == 'nt' else 'clear')  # Limpa a tela em GNU/Linux e Windows
         continue
