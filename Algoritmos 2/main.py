@@ -1,5 +1,7 @@
-from funcoes import *  # Módulo das funçoes do programa
+#   PYTHON 3.6
 
+from funcoes import *  # Módulo das funçoes do programa
+limpatela
 
 while True:
 
@@ -18,5 +20,5 @@ while True:
         break
     else:
         print('Opção inválida')
-        system('cls' if name == 'nt' else 'clear')  # Limpa a tela em GNU/Linux e Windows
+        limpatela
         continue
