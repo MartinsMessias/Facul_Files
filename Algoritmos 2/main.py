@@ -3,10 +3,10 @@
 
 """
 
-import os  # Usado apenas para a função de limpar a tela
-from time import sleep  # Usado para deixar um delay entre os menus
+import os               # Usado apenas para a função de limpar a tela
+from time import sleep  # Usado para deixar um delay entre o menu
 
-produtos = [[1, 'Leite', 1, 1, 1], [2, 'Pão', 1, 1, 1]]  # Lista onde são salvos os dados de produtos
+produtos = []  # Lista onde são salvos os dados de produtos
 ht = 38 * '#'
 hs = 8 * '.'
 
@@ -19,6 +19,7 @@ hs = 8 * '.'
 def cadastrarProduto():
 
     while True:
+
         os.system('cls' if os.name == 'nt' else 'clear')  # Limpa a tela
         print(f"\n{ht}\n{'[C A D A S T R A R   P R O D U T O]':^38}\n{ht}\n")
 
@@ -58,55 +59,63 @@ def cadastrarProduto():
 
 def realizarVenda():
 
-    os.system('cls' if os.name == 'nt' else 'clear')
+    os.system('cls' if os.name == 'nt' else 'clear')    # Limpa tela
     print(f"\n{ht}\n{'[R E A L I Z A R   V E N D A]':^38}\n{ht}\n")
     preco = 0
-    busca = buscarProduto()
+    busca = buscarProduto(int(input(f'\n[CÓDIGO DO PRODUTO]{hs}[ ')))
+    sp = lambda v: v * ' '
 
     while True:
 
-        for x in range(len(produtos)):
+        items = 0
+
+        for produto in produtos:
             if busca:
-                qtd = int(input(f"[QUANTIDADE{7 * ' '}]{hs}[ "))
-                produtos[x][3] -= qtd  # Retirada de produtos do estoque
-                preco += (produtos[x][2] * qtd)
-                print(f'\n[SUBTOTAL         ]{hs}[ R$ {preco:.2f}')
-                continue
-            if not busca:
+                qtd = int(input(f"[QUANTIDADE{sp(7)}]{hs}[ "))
+                produto[4] -= qtd  # Retirada de produtos do estoque
+                preco += (produto[2] * qtd)
+                print(f'\n[SUBTOTAL{sp(9)}]{hs}[ R$ {preco:.2f}')
+                items += 1
                 break
 
         r = str(input('\nDeseja adicionar outro item? [S/n]: ')).lower()
         if r == 's':
-            if buscarProduto():
-                continue
+            busca = buscarProduto(int(input(f'\n[CÓDIGO DO PRODUTO]{hs}[ ')))
         else:
-            continue
+            break
 
-        vlp = float(input(f"\n[VALOR PAGO{7*' '}]{hs}[ R$ "))
-        print('[TROCO{3}]{0}[ R$ {1:.2f}\n\n[TOTAL{3}]{0}[ R$ {2:.2f}'
-              .format(hs, abs(vlp - preco), preco, 12 * ' '))
+        if items > 0:  # Somente se a quantidade de items for maior que 0 pergunta o valor pago
 
-        r = input('\nDeseja iniciar nova venda? [S/n]: ').lower()
-        if r == 's':
-            realizarVenda()
-        else:
-            menu()
+            vlp = float(input(f"\n[VALOR PAGO{sp(7)}]{hs}[ R$ "))
+
+            print('[TROCO{3}]{0}[ R$ {1:.2f}\n\n[TOTAL{3}]{0}[ R$ {2:.2f}'
+                  .format(hs, abs(vlp - preco), preco, sp(12)))
+
+    r = input('\nDeseja iniciar nova venda? [S/n]: ').lower()
+    if r == 's':
+        realizarVenda()
+
+    return menu()
 
 
 ##########################################
 # FUNÇÃO QUE BUSCA O PRODUTO PELO CÓDIGO #
 ##########################################
 
-def buscarProduto():
+def buscarProduto(codprod):
 
-    codprod = int(input(f'\n[CÓDIGO DO PRODUTO]{hs}[ '))
-    for x in range(len(produtos)):
-        if codprod == produtos[x][0]:
-            print('[PRODUTO{3}]{0}[ {1}\n[PREÇO{4}]{0}[ R$ {2:.2f}'
-                  .format(hs, produtos[x][1], produtos[x][2], 10 * ' ', 12 * ' '))
+    sp = lambda v: v * ' '
+
+    for produto in produtos:
+        if codprod == produto[0] and produto[3] < produto[4]:
+            print('[PRODUTO{3}]{0}[ {1}\n[EM ESTOQUE       ]{0}[ {5}\n[PREÇO{4}]{0}[ R$ {2:.2f}'
+                  .format(hs, produto[1], produto[2], sp(10), sp(12), produto[4]))
+
             return True
 
-    print(f"\n{'NENHUM PRODUTO FOI ENCONTRADO':^38}\n")
+    print(f"\n{'NENHUM PRODUTO FOI ENCONTRADO OU':^38}\n"
+          f"\n{'ESTÁ ABAIXO DA QTD DE ESTOQUE MÍNIMO':^38}\n")
+
     return False
 
 
@@ -117,6 +126,7 @@ def buscarProduto():
 def menu():
 
     while True:
+
         os.system('cls' if os.name == 'nt' else 'clear')  # Limpa a tela
         print(f"{ht}\n{'[ M E N U   P R I N C I P A L ]':^38}\n{ht}\n")
         resp = int(input('\n'
@@ -136,4 +146,4 @@ def menu():
             continue
 
 
-menu()  # Chama o menu
+menu()  # Chama o menu e inicia o programa
