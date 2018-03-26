@@ -3,10 +3,10 @@
 
 """
 
-import os               # Usado apenas para a função de limpar a tela
+import os  # Usado apenas para a função de limpar a tela
 from time import sleep  # Usado para deixar um delay entre o menu
 
-produtos = []  # Lista onde são salvos os dados de produtos
+produtos = [[1, 'Leite', 1.50, 1, 10], [2, 'Pão', 0.25, 1, 15]]  # Lista onde são salvos os dados de produtos
 ht = 38 * '#'
 hs = 8 * '.'
 
@@ -24,17 +24,8 @@ def cadastrarProduto():
         print(f"\n{ht}\n{'[C A D A S T R A R   P R O D U T O]':^38}\n{ht}\n")
 
         code = int(input(f'[CÓDIGO DO PRODUTO]{hs}[ '))
-
-        for i in produtos:
-            if code == i[0]:
-                print('\nJá existe um produto com este código!!!')
-                r = str(input('\nDeseja atualizar as informações dele? [s/n]: ')).lower()
-                if r == 'n':
-                    menu()
-                if r == 's':
-                    produtos.remove(i)
-
-        nome = str(input(f'[NOME DO PRODUTO  ]{hs}[ '))
+        verificaExist(code)
+        nome = str(input(f'[NOME DO PRODUTO  ]{hs}[ ')).capitalize()
         valor = float(input(f'[VALOR DE VENDA   ]{hs}[ R$ '))
         estoqMin = int(input(f'[ESTOQUE MÍNIMO   ]{hs}[ '))
         estoqAtual = int(input(f'[ESTOQUE ATUAL    ]{hs}[ '))
@@ -52,6 +43,24 @@ def cadastrarProduto():
         return menu()
 
 
+
+#############################################################
+#   FUNÇÃO PARA VERIFICAR SE UM PRODUTO EXISTE NO CADASTRO  #
+#   E PERGUNTA SE DESEJA ATUALIZAR AS INFORMAÇÕES DO MESMO  #
+#############################################################
+
+def verificaExist(code):
+
+    for i in produtos:
+        if code == i[0]:
+            print('\nJá existe um produto com este código!!!')
+            r = str(input('\nDeseja atualizar as informações dele? [s/n]: ')).lower()
+            if r == 'n':
+                menu()
+            if r == 's':
+                produtos.remove(i)
+
+
 #############################################################
 #   FUNÇÃO PARA VERIFICAR SE UM PRODUTO EXISTE NO CADASTRO  #
 #   E REALIZA A SUA VENDA CASO ENCONTRE                     #
@@ -59,21 +68,21 @@ def cadastrarProduto():
 
 def realizarVenda():
 
-    os.system('cls' if os.name == 'nt' else 'clear')    # Limpa tela
+    os.system('cls' if os.name == 'nt' else 'clear')  # Limpa tela
     print(f"\n{ht}\n{'[R E A L I Z A R   V E N D A]':^38}\n{ht}\n")
     preco = 0
-    busca = buscarProduto(int(input(f'\n[CÓDIGO DO PRODUTO]{hs}[ ')))
+    code = int(input(f'\n[CÓDIGO DO PRODUTO]{hs}[ '))
+    buscarProduto(code)
     sp = lambda v: v * ' '
+    items = 0
 
     while True:
 
-        items = 0
-
-        for produto in produtos:
-            if busca:
+        for i in produtos:
+            if code == i[0]:
                 qtd = int(input(f"[QUANTIDADE{sp(7)}]{hs}[ "))
-                produto[4] -= qtd  # Retirada de produtos do estoque
-                preco += (produto[2] * qtd)
+                preco += (i[2] * qtd)
+                i[4] -= qtd  # Retirada de produtos do estoque
                 print(f'\n[SUBTOTAL{sp(9)}]{hs}[ R$ {preco:.2f}')
                 items += 1
                 break
@@ -82,16 +91,16 @@ def realizarVenda():
         if r == 's':
             busca = buscarProduto(int(input(f'\n[CÓDIGO DO PRODUTO]{hs}[ ')))
         else:
+            if items > 0:  # Somente se a quantidade de items for maior que 0 pergunta o valor pago
+
+                vlp = float(input(f"\n[VALOR PAGO{sp(7)}]{hs}[ R$ "))
+
+                print('[TROCO{3}]{0}[ R$ {1:.2f}\n\n[TOTAL{3}]{0}[ R$ {2:.2f}'
+                      .format(hs, abs(vlp - preco), preco, sp(12)))
             break
 
-        if items > 0:  # Somente se a quantidade de items for maior que 0 pergunta o valor pago
-
-            vlp = float(input(f"\n[VALOR PAGO{sp(7)}]{hs}[ R$ "))
-
-            print('[TROCO{3}]{0}[ R$ {1:.2f}\n\n[TOTAL{3}]{0}[ R$ {2:.2f}'
-                  .format(hs, abs(vlp - preco), preco, sp(12)))
-
     r = input('\nDeseja iniciar nova venda? [S/n]: ').lower()
+
     if r == 's':
         realizarVenda()
 
@@ -145,5 +154,5 @@ def menu():
             sleep(1)
             continue
 
-
+print(produtos)
 menu()  # Chama o menu e inicia o programa
