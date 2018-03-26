@@ -6,7 +6,7 @@
 import os               # Usado apenas para a função de limpar a tela
 from time import sleep  # Usado para deixar um delay entre o menu
 
-produtos = [[1, 'Leite', 1.50, 1, 10], [2, 'Pão', 0.25, 1, 15]]  # Lista onde são salvos os dados de produtos
+produtos = []  # Lista onde são salvos os dados de produtos
 ht = 38 * '#'
 hs = 8 * '.'
 sp = lambda v: v * ' '
@@ -52,25 +52,6 @@ def cadastrarProduto():
 
 
 #############################################################
-#   FUNÇÃO PARA VERIFICAR SE O VALOR PAGO DA PARA PAGAR AS  #
-#   COMPRAS FEITAS PELO CLIENTE                             #
-#############################################################
-
-def pagamento(vlp, total):
-
-    while True:
-        if vlp < total:
-            print('\nDinheiro insuficiente!!!\n')
-            vlp = float(input(f"\n[VALOR PAGO{sp(7)}]{hs}[ R$ "))
-            continue
-        else:
-            print('[TROCO{3}]{0}[ R$ {1:.2f}\n\n[TOTAL{3}]{0}[ R$ {2:.2f}'
-                  .format(hs, abs(vlp - total), total, sp(12)))
-            break
-
-
-
-#############################################################
 #   FUNÇÃO PARA VERIFICAR SE UM PRODUTO EXISTE NO CADASTRO  #
 #   E REALIZA A SUA VENDA CASO ENCONTRE                     #
 #############################################################
@@ -105,14 +86,20 @@ def realizarVenda():
             continue
         else:
             if items > 0:  # Somente se a quantidade de items for maior que 0 pergunta o valor pago
-                pagamento(float(input(f"\n[VALOR PAGO{sp(7)}]{hs}[ R$ ")), total)
+                while True:
+                    vlp = float(input(f"\n[VALOR PAGO{sp(7)}]{hs}[ R$ "))
+                    if vlp < total:
+                        print('\nDinheiro insuficiente!!!\n')
+                        continue
+                    else:
+                        print('[TROCO{3}]{0}[ R$ {1:.2f}\n\n[TOTAL{3}]{0}[ R$ {2:.2f}'
+                              .format(hs, abs(vlp - total), total, sp(12)))
+                        break
             break
 
     rs = input('\nDeseja iniciar nova venda? [S/n]: ').lower()
     if rs == 's':
         realizarVenda()
-
-
 
 
 ##########################################
