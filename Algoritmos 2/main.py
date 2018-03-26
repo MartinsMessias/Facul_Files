@@ -3,13 +3,13 @@
 
 """
 
-import os  # Usado apenas para a função de limpar a tela
+import os               # Usado apenas para a função de limpar a tela
 from time import sleep  # Usado para deixar um delay entre o menu
 
 produtos = [[1, 'Leite', 1.50, 1, 10], [2, 'Pão', 0.25, 1, 15]]  # Lista onde são salvos os dados de produtos
 ht = 38 * '#'
 hs = 8 * '.'
-
+sp = lambda v: v * ' '
 
 #################################################################
 #   FUNÇÃO PARA VERIFICAR SE UM PRODUTO JÁ CONSTA NO CADASTRO   #
@@ -24,7 +24,15 @@ def cadastrarProduto():
         print(f"\n{ht}\n{'[C A D A S T R A R   P R O D U T O]':^38}\n{ht}\n")
 
         code = int(input(f'[CÓDIGO DO PRODUTO]{hs}[ '))
-        verificaExist(code)
+        for i in produtos:
+            if code == i[0]:
+                print('\nJá existe um produto com este código!!!')
+                r = str(input('\nDeseja atualizar as informações dele? [s/n]: ')).lower()
+                if r == 'n':
+                    menu()
+                else:
+                    produtos.remove(i)
+
         nome = str(input(f'[NOME DO PRODUTO  ]{hs}[ ')).capitalize()
         valor = float(input(f'[VALOR DE VENDA   ]{hs}[ R$ '))
         estoqMin = int(input(f'[ESTOQUE MÍNIMO   ]{hs}[ '))
@@ -38,27 +46,28 @@ def cadastrarProduto():
         r = str(input('\nDeseja cadastrar novo produto? [S/n]: ')).lower()
 
         if r == 's':
-            cadastrarProduto()
+            return cadastrarProduto()
 
         return menu()
 
 
-
 #############################################################
-#   FUNÇÃO PARA VERIFICAR SE UM PRODUTO EXISTE NO CADASTRO  #
-#   E PERGUNTA SE DESEJA ATUALIZAR AS INFORMAÇÕES DO MESMO  #
+#   FUNÇÃO PARA VERIFICAR SE O VALOR PAGO DA PARA PAGAR AS  #
+#   COMPRAS FEITAS PELO CLIENTE                             #
 #############################################################
 
-def verificaExist(code):
+def pagamento(vlp, total):
 
-    for i in produtos:
-        if code == i[0]:
-            print('\nJá existe um produto com este código!!!')
-            r = str(input('\nDeseja atualizar as informações dele? [s/n]: ')).lower()
-            if r == 'n':
-                menu()
-            if r == 's':
-                produtos.remove(i)
+    while True:
+        if vlp < total:
+            print('\nDinheiro insuficiente!!!\n')
+            vlp = float(input(f"\n[VALOR PAGO{sp(7)}]{hs}[ R$ "))
+            continue
+        else:
+            print('[TROCO{3}]{0}[ R$ {1:.2f}\n\n[TOTAL{3}]{0}[ R$ {2:.2f}'
+                  .format(hs, abs(vlp - total), total, sp(12)))
+            break
+
 
 
 #############################################################
@@ -70,41 +79,40 @@ def realizarVenda():
 
     os.system('cls' if os.name == 'nt' else 'clear')  # Limpa tela
     print(f"\n{ht}\n{'[R E A L I Z A R   V E N D A]':^38}\n{ht}\n")
-    preco = 0
-    code = int(input(f'\n[CÓDIGO DO PRODUTO]{hs}[ '))
-    buscarProduto(code)
-    sp = lambda v: v * ' '
+    total = 0
     items = 0
 
     while True:
-
-        for i in produtos:
-            if code == i[0]:
-                qtd = int(input(f"[QUANTIDADE{sp(7)}]{hs}[ "))
-                preco += (i[2] * qtd)
-                i[4] -= qtd  # Retirada de produtos do estoque
-                print(f'\n[SUBTOTAL{sp(9)}]{hs}[ R$ {preco:.2f}')
-                items += 1
-                break
+        code = int(input(f'\n[CÓDIGO DO PRODUTO]{hs}[ '))
+        busca = buscarProduto(code)
+        while True:
+            for i in produtos:
+                if code == i[0] and busca:
+                    qtd = int(input(f"[QUANTIDADE{sp(7)}]{hs}[ "))
+                    if qtd > i[4]:
+                        print('\nQuantidade acima do estoque mínimo.\n')
+                        continue
+                    else:
+                        total += (i[2] * qtd)
+                        i[4] -= qtd     # Retirada de produtos do estoque
+                        print(f'\n[SUBTOTAL{sp(9)}]{hs}[ R$ {total:.2f}')
+                        items += 1
+                        break
+            break
 
         r = str(input('\nDeseja adicionar outro item? [S/n]: ')).lower()
         if r == 's':
-            busca = buscarProduto(int(input(f'\n[CÓDIGO DO PRODUTO]{hs}[ ')))
+            continue
         else:
             if items > 0:  # Somente se a quantidade de items for maior que 0 pergunta o valor pago
-
-                vlp = float(input(f"\n[VALOR PAGO{sp(7)}]{hs}[ R$ "))
-
-                print('[TROCO{3}]{0}[ R$ {1:.2f}\n\n[TOTAL{3}]{0}[ R$ {2:.2f}'
-                      .format(hs, abs(vlp - preco), preco, sp(12)))
+                pagamento(float(input(f"\n[VALOR PAGO{sp(7)}]{hs}[ R$ ")), total)
             break
 
-    r = input('\nDeseja iniciar nova venda? [S/n]: ').lower()
-
-    if r == 's':
+    rs = input('\nDeseja iniciar nova venda? [S/n]: ').lower()
+    if rs == 's':
         realizarVenda()
 
-    return menu()
+
 
 
 ##########################################
@@ -113,19 +121,18 @@ def realizarVenda():
 
 def buscarProduto(codprod):
 
-    sp = lambda v: v * ' '
-
     for produto in produtos:
         if codprod == produto[0] and produto[3] < produto[4]:
             print('[PRODUTO{3}]{0}[ {1}\n[EM ESTOQUE       ]{0}[ {5}\n[PREÇO{4}]{0}[ R$ {2:.2f}'
                   .format(hs, produto[1], produto[2], sp(10), sp(12), produto[4]))
 
-            return True
+            return True     # Retorna verdadeiro caso encontre
 
     print(f"\n{'NENHUM PRODUTO FOI ENCONTRADO OU':^38}\n"
           f"\n{'ESTÁ ABAIXO DA QTD DE ESTOQUE MÍNIMO':^38}\n")
 
-    return False
+    return False    # Retorna falso caso não encontre
+
 
 
 #####################
@@ -137,7 +144,7 @@ def menu():
     while True:
 
         os.system('cls' if os.name == 'nt' else 'clear')  # Limpa a tela
-        print(f"{ht}\n{'[ M E N U   P R I N C I P A L ]':^38}\n{ht}\n")
+        print(f"{ht}\n{'[ C A I X A   P R O G R A M ]':^38}\n{ht}\n")
         resp = int(input('\n'
                          '\t[1] - Cadastrar produto\n'
                          '\t[2] - Realizar venda\n\n'
@@ -154,5 +161,5 @@ def menu():
             sleep(1)
             continue
 
-print(produtos)
-menu()  # Chama o menu e inicia o programa
+
+menu()  # Inicia o programa e chama o menu
