@@ -7,7 +7,7 @@ import os               # Usado apenas para a função de limpar a tela
 from time import sleep  # Usado para deixar um delay entre o menu
 
 produtos = []  # Lista onde são salvos os dados de produtos
-ht = 38 * '#'
+ht = 40 * '#'
 hs = 8 * '.'
 sp = lambda v: v * ' '
 
@@ -31,12 +31,19 @@ def cadastrarProduto():
                 if r == 'n':
                     menu()
                 else:
-                    produtos.remove(i)
+                    produtos.remove(i)  # Remove o produto na posição [i]
 
-        nome = str(input(f'[NOME DO PRODUTO  ]{hs}[ ')).capitalize()
+        nome = str(input(f'\n[NOME DO PRODUTO  ]{hs}[ ')).capitalize()
         valor = float(input(f'[VALOR DE VENDA   ]{hs}[ R$ '))
         estoqMin = int(input(f'[ESTOQUE MÍNIMO   ]{hs}[ '))
-        estoqAtual = int(input(f'[ESTOQUE ATUAL    ]{hs}[ '))
+        while True:
+            estoqAtual = int(input(f'[ESTOQUE ATUAL    ]{hs}[ '))
+            if estoqAtual < estoqMin:
+                print('\nEstoque atual abaixo do mínimo!!!\n')
+                continue
+
+            break
+
         produtos.append([code, nome, valor, estoqMin, estoqAtual])
 
         print(f"\n{'[  PRODUTO CADASTRADO COM SUCESSO  ]':^35}\n")
@@ -71,7 +78,7 @@ def realizarVenda():
                 if code == i[0] and busca:
                     qtd = int(input(f"[QUANTIDADE{sp(7)}]{hs}[ "))
                     if qtd > i[4]:
-                        print('\nQuantidade acima do estoque mínimo.\n')
+                        print('\nQuantidade acima do disponível em estoque.\n')
                         continue
                     else:
                         total += (i[2] * qtd)
@@ -130,19 +137,27 @@ def menu():
 
     while True:
 
-        os.system('cls' if os.name == 'nt' else 'clear')  # Limpa a tela
-        print(f"{ht}\n{'[ C A I X A   P R O G R A M ]':^38}\n{ht}\n")
-        resp = int(input('\n'
+        os.system('cls' if os.name == 'nt' else 'clear')    # Limpa a tela
+        print('''
+   ██████╗ █████╗ ██╗██╗  ██╗ █████╗ 
+  ██╔════╝██╔══██╗██║╚██╗██╔╝██╔══██╗
+  ██║     ███████║██║ ╚███╔╝ ███████║
+  ██║     ██╔══██║██║ ██╔██╗ ██╔══██║
+  ╚██████╗██║  ██║██║██╔╝ ██╗██║  ██║
+   ╚═════╝╚═╝  ╚═╝╚═╝╚═╝  ╚═╝╚═╝  ╚═╝''')
+        resp = int(input('{0}\n\n'
                          '\t[1] - Cadastrar produto\n'
                          '\t[2] - Realizar venda\n\n'
-                         '\t[0] - Sair\n\n{}\n:: '
+                         '\t[0] - Sair\n\n{0}\n:: '
                          .format(ht)))
-        if resp == 1:
-            cadastrarProduto()
-        elif resp == 2:
-            realizarVenda()
-        elif resp == 0:
-            exit()
+        if resp == 1: cadastrarProduto()
+        elif resp == 2: realizarVenda()
+        elif resp == 0: exit()
+        elif resp == 2018:
+            print('\n\t[ Criadores ]\n'
+                  '\nEddie Giovanne\nIgor Melo\nBruno'
+                  '\nMessias Martins\nWilliam dos Santos')
+            input('\n\t[ENTER]')
         else:
             print(f"{'[ OPÇÃO INVÁLIDA!!! ]':^38}")
             sleep(1)
