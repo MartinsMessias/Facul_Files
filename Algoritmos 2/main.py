@@ -8,7 +8,7 @@ from time import sleep  # Usado para deixar um delay entre o menu
 
 produtos = []  # Lista onde são salvos os dados de produtos
 ht = 40 * '#'
-hs = 8 * '.'
+hs = 9 * '.'
 sp = lambda v: v * ' '
 
 #################################################################
@@ -97,7 +97,10 @@ def realizarVenda():
                     vlp = float(input(f"\n[VALOR PAGO{sp(7)}]{hs}[ R$ "))
                     if vlp < total:
                         print('\nDinheiro insuficiente!!!\n')
-                        continue
+                        otv = str(input('Entrar com outro valor? [S/n]:  ')).lower()
+                        if otv == 's':
+                            continue
+                        break
                     else:
                         print('[TROCO{3}]{0}[ R$ {1:.2f}\n\n[TOTAL{3}]{0}[ R$ {2:.2f}'
                               .format(hs, abs(vlp - total), total, sp(12)))
@@ -122,8 +125,8 @@ def buscarProduto(codprod):
 
             return True     # Retorna verdadeiro caso encontre
 
-    print(f"\n{'NENHUM PRODUTO FOI ENCONTRADO OU':^38}\n"
-          f"\n{'ESTÁ ABAIXO DA QTD DE ESTOQUE MÍNIMO':^38}\n")
+    print(f"\n{'NENHUM PRODUTO FOI ENCONTRADO OU':*^38}\n"
+          f"\n{'ESTÁ ABAIXO DA QTD DE ESTOQUE MÍNIMO':*^38}\n")
 
     return False    # Retorna falso caso não encontre
 
@@ -154,12 +157,15 @@ def menu():
         elif resp == 2: realizarVenda()
         elif resp == 0: exit()
         elif resp == 2018:
-            print('\n\t[ Criadores ]\n'
+            print('\n'
+                  '+-+-+-+-+-+-+-+-+-+\n'
+                  '|C|R|I|A|D|O|R|E|S|\n'
+                  '+-+-+-+-+-+-+-+-+-+\n'
                   '\nEddie Giovanne\nIgor Melo\nBruno'
                   '\nMessias Martins\nWilliam dos Santos')
             input('\n\t[ENTER]')
         else:
-            print(f"{'[ OPÇÃO INVÁLIDA!!! ]':^38}")
+            print(f"{'[ OPÇÃO INVÁLIDA!!! ]':*^38}")
             sleep(1)
             continue
 
