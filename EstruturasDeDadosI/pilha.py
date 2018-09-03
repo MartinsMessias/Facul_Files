@@ -1,52 +1,53 @@
 class No:
+    """Esta classe representa um No de uma estrutura encadeada."""
 
-    def __init__(self, valor=None, no_anterior=None):
-        self.valor = valor
-        self.anterior = no_anterior
+    def __init__(self, dado=0, No_anterior=None):
+        self.dado = dado
+        self.anterior = No_anterior
 
-    def __str__(self):
-        return f'{self.valor} \u21d2 {self.anterior}'
+    def __repr__(self):
+        return '%s -> %s' % (self.dado, self.anterior)
 
 
 class Pilha:
+    """Esta classe representa uma pilha usando uma estrutura encadeada."""
 
     def __init__(self):
         self.topo = None
 
-    def __str__(self):
-        return str(self.topo)
+    def __repr__(self):
+        return "[" + str(self.topo) + "]"
 
-    # Método para adicionar ao topo da pilha
-    def adicionar(self, novo_valor):
-        novo_no = No(novo_valor)
-        novo_no.anterior = self.topo
-        self.topo = novo_no
+    def insere(self, novo_dado):
+        """Insere um elemento no final da pilha."""
 
-    # Método para remover do topo da pilha
-    def remover(self):
-        assert self.topo, "Pilha vazia!!!."
+        # Cria um novo No com o dado a ser armazenado.
+        novo_No = No(novo_dado)
+
+        # Faz com que o novo No seja o topo da pilha.
+        novo_No.anterior = self.topo
+
+        # Faz com que a cabeça da lista referencie o novo No.
+        self.topo = novo_No
+
+    def remove(self):
+        """Remove o elemento que está no topo da pilha."""
+
+        assert self.topo, "Impossível remover valor de pilha vazia."
+
         self.topo = self.topo.anterior
 
-#######################################################################################
-#                                    EXEMPLOS                                         #
-#######################################################################################
 
-pilha = Pilha()                 # Cria uma pilha vazia.
+# Cria uma pilha vazia.
+pilha = Pilha()
 print("Pilha vazia: ", pilha)
 
-# Insere valores do range na pilha.
-for i in range(6):
-    pilha.adicionar(i)
-    print(f'Insere o valor {i} no topo: {pilha}')
+# Insere elementos na pilha.
+for i in range(5):
+    pilha.insere(i)
+    print("Insere o valor {0} no topo da pilha: {1}".format(i, pilha))
 
-print('_'*66)
-
-# Remove um à um todos valores da pilha.
+# Remove elementos na pilha.
 while pilha.topo is not None:
-    pilha.remover()
-    print(f'Removendo valor que está no topo: {pilha}')
-
-
-# Asserção em caso de tentativa de remoção de uma pilha vazia
-# pilha.remover()
-# print(pilha)
+    pilha.remove()
+    print("Removendo elemento que está no topo da pilha: ", pilha)
