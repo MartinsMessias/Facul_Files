@@ -32,10 +32,10 @@ def pre_ordem(no):
 #################################################
 # Função para imprimir em pós-ordem.            #
 #################################################
-def pre_ordem(no):
+def pos_ordem(no):
     if no is not None:
-        pre_ordem(no.esquerda)
-        pre_ordem(no.direita)
+        pos_ordem(no.esquerda)
+        pos_ordem(no.direita)
         print('(' + str(no.chave) + ')', end=' ')
         
 #################################################
@@ -136,11 +136,20 @@ def altura(raiz):
 #################################################
 # Função para saber qual o maior valor.         #
 #################################################
-def menor_valor(raiz):
+def maior_valor(raiz):
     no = raiz
     while no.direita is not None:
         no = no.direita
     return no.chave
+
+#################################################
+# Função para saber qual o menor valor.         #
+#################################################
+def menor_valor1(raiz):
+    nodo = raiz
+    while nodo.esquerda is not None:
+        nodo = nodo.esquerda
+    return nodo.chave
     
 
 # PRA USAR NA REMOÇÃO!
@@ -213,21 +222,24 @@ arvore = NoArvore(int(input('\nValor raíz: ')))
 while True:
     # Para evitar erro quando árvore é vazia.
     try:
-      print('Árvore atual em ordem: ', em_ordem(arvore), end='\n')
-      print('Árvore atual em pre_ordem: ', pre_ordem(arvore), end='\n')
-      print('Árvore atual em pre_ordem: ', pos_ordem(arvore), end='\n')
-      print('\nMenor chave: ', menor_valor(arvore.esquerda))
+      print('Árvore atual em ordem: ', end='')
+      em_ordem(arvore)
+      print('\nÁrvore atual em pre_ordem: ', end='')
+      pre_ordem(arvore)
+      print('\nÁrvore atual em pre_ordem: ', end='')
+      pos_ordem(arvore)
+      print('\nMenor chave: ', menor_valor1(arvore.esquerda))
       print('Maior chave: ', maior_valor(arvore.direita))
       #print('\nIdenticas :', identicas(raiz, raiz))
-      print('\nAltura da árvore: ', altura(arvore))
-      print('\nBalanceada: ', balanceada(arvore))
-      print('\nSimetrica: ', checa_simetrica(arvore))
+      print('Altura da árvore: ', altura(arvore))
+      print('Balanceada: ', balanceada(arvore))
+      print('Simetrica: ', checa_simetrica(arvore))
       print('\nRAIZ: ', arvore.chave)
     except AttributeError:
-        print('?\nÁrvore vazia!')
+        print('?\n')
 
     print('\n' + '_' * 50)
-    p = input('\nINSERIR\t - [i/I]\nREMOVER\t - [r/R]\nSAIR\t - [s/S]\n>>> ').lower()
+    p = input('\nINSERIR\t - [i/I]\nBUSCAR\t - [b/B]\nREMOVER\t - [r/R]\nSAIR\t - [s/S]\n>>> ').lower()
 
     if p == 's':
         break
@@ -236,8 +248,9 @@ while True:
     elif p == 'i':
         arvore = insere(arvore, int(input('\nValor a ser inserido: ')))
     elif p == 'b':
-        resultado = busca(raiz, chave)
+        chave = int(input('Buscar por: '))
+        resultado = busca(arvore, chave)
         if resultado:
-            print("Busca pela chave {}: OK!".format(chave))
+            print("\nBusca pela chave {}: OK!".format(chave))
         else:
-            print("Busca pela chave {}: FALHA!".format(chave))
+            print("\nBusca pela chave {}: FALHA!".format(chave))
