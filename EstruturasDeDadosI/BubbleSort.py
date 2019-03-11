@@ -1,4 +1,4 @@
-def sort_list(lst):
+def bubble_sort(lst):
     """   Função Bubble Sort  """
     for j in range(len(lst) - 1):
         for i in range(len(lst) - 1):
