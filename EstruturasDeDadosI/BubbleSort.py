@@ -16,6 +16,6 @@ unsorted = [5, 4, 3, 1, 2, 7, 6]
 print('Antes: ', unsorted) # Lista desordenada
 
 # Chama função para ordenar a lista
-sort_list(unsorted)
+bubble_sort(unsorted)
 
 print('Depois:', unsorted) # Lista ordenada
